@@ -5,13 +5,18 @@ import (
 
 	"github.com/skiba-mateusz/bookshelf/cmd"
 	"github.com/skiba-mateusz/bookshelf/paths"
+	"github.com/skiba-mateusz/bookshelf/store"
 	"github.com/spf13/cobra"
 )
 
 func main() {
-	_, err := paths.GetBooksJsonFile()
+	booksFile, err := paths.GetBooksJsonFile()
 	if err != nil {
 		log.Fatalf("Error retrieving json file: %v", err)
+	}
+	bookStore, err := store.NewBookStore(booksFile)
+	if err != nil {
+		log.Fatalf("Error initializing BookStore: %v", err)
 	}
 
 	rootCmd := &cobra.Command{
@@ -19,7 +24,7 @@ func main() {
 		Short: "CLI app for managing your book collection",
 	}
 
-	rootCmd.AddCommand(cmd.AddBookCommand())
+	rootCmd.AddCommand(cmd.AddBookCommand(bookStore))
 
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatalf("Error executing command: %v", err)

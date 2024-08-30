@@ -1,9 +1,12 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"github.com/skiba-mateusz/bookshelf/store"
+	"github.com/spf13/cobra"
+)
 
 // Command for adding books to collection
-func AddBookCommand() *cobra.Command {
+func AddBookCommand(bookStore *store.BookStore) *cobra.Command {
 	command := &cobra.Command{
 		Use: "add",
 		Short: "Adds new book to your collection",
@@ -21,16 +24,18 @@ func AddBookCommand() *cobra.Command {
 				return err
 			}
 
-			if title == "" || author == "" || year == 0 {
+			if title == "" || author == "" || year <= 0 {
 				cmd.PrintErrln("Error: all flags --title, --author, --year are required")
 				cmd.Usage()
 				return nil
 			}
 
-			cmd.Println(title, author, year)
+			err = bookStore.Add(title, author, year)
+			if err != nil {
+				return err
+			}
 
-			// TODO: Implement a BookStore for adding books
-
+			cmd.PrintErrln("Book added successfully")
 			return nil
 		},
 	}
