@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"sort"
 	"strings"
 	"time"
 )
@@ -43,12 +44,15 @@ func NewBookStore(filename string) (*BookStore, error) {
 	return store, nil
 }
 
-// Returns the list of books in the store
+// Returns the list of books in the store in alphabetical order by title
 func (s *BookStore) Books() []Book {
+	sort.Slice(s.books, func(i, j int) bool {
+		return strings.ToLower(s.books[i].Title) < strings.ToLower(s.books[j].Title)
+	})
 	return s.books
 }
 
-// Searches for book by SearchQuery and returns them
+// Searches for book by SearchQuery and returns them in alphabetical order by title
 func (s *BookStore) Search(query SearchQuery) []Book {
 	results := []Book{}
 	
@@ -67,6 +71,11 @@ func (s *BookStore) Search(query SearchQuery) []Book {
 		}
 		results = append(results, book)
 	}
+
+	// Sort results alphabetically by title
+	sort.Slice(results, func(i, j int) bool {
+		return strings.ToLower(results[i].Title) < strings.ToLower(results[j].Title)
+	})
 
 	return results
 }
@@ -128,7 +137,7 @@ func (s *BookStore) save() error {
 	return os.WriteFile(s.filename, dataBytes, 0644)
 }
 
-// Returns a unique ID that is never 0
+// Returns a unique ID that is never
 func (s *BookStore) nextID() int64 {
 	var maxID int64
 	for _, book := range s.books {
