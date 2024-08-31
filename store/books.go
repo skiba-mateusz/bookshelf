@@ -3,6 +3,7 @@ package store
 import (
 	"encoding/json"
 	"os"
+	"strings"
 	"time"
 )
 
@@ -13,6 +14,13 @@ type Book struct {
 	Year    	int `json:"year"`
 	Read    	bool `json:"read"`
 	CreatedAt time.Time `json:"created_at"`
+}
+
+type SearchQuery struct {
+	Title  string
+	Author string
+	Year   int
+	Read   *bool
 }
 
 type BookStore struct {
@@ -37,6 +45,29 @@ func NewBookStore(filename string) (*BookStore, error) {
 // Returns the list of books in the store
 func (s *BookStore) Books() []Book {
 	return s.books
+}
+
+// Searches for book by SearchQuery and returns them
+func (s *BookStore) Search(query SearchQuery) []Book {
+	results := []Book{}
+	
+	for _, book := range s.books {
+		if query.Title != "" && !strings.Contains(strings.ToLower(book.Title), query.Title) {
+			continue
+		}
+		if query.Author != "" && !strings.Contains(strings.ToLower(book.Author), query.Author) {
+			continue
+		}
+		if query.Year > 0  && book.Year != query.Year {
+			continue
+		}
+		if query.Read != nil && book.Read != *query.Read {
+			continue
+		}
+		results = append(results, book)
+	}
+
+	return results
 }
 
 // Adds a new book to the store and saves it in the file
