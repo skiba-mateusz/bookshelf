@@ -128,13 +128,17 @@ func (s *BookStore) save() error {
 	return os.WriteFile(s.filename, dataBytes, 0644)
 }
 
-// Returns a unique ID
+// Returns a unique ID that is never 0
 func (s *BookStore) nextID() int64 {
 	var maxID int64
 	for _, book := range s.books {
 		if book.ID > maxID {
 			maxID = book.ID
 		}
+	}
+
+	if maxID == 0 {
+		maxID = 1
 	}
 
 	return maxID + 1
