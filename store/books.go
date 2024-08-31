@@ -71,16 +71,8 @@ func (s *BookStore) Search(query SearchQuery) []Book {
 }
 
 // Adds a new book to the store and saves it in the file
-func (s *BookStore) Add(title, author string, year int) error {
-	book := Book{
-		ID: s.nextID(),
-		Title: title,
-		Author: author,
-		Year: year,
-		Read: false,
-		CreatedAt: time.Now(),
-	}
-
+func (s *BookStore) Add(book Book) error {
+	book.ID = s.nextID()
 	s.books = append(s.books, book)
 	return s.save()
 }

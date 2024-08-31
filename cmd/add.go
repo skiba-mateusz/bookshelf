@@ -1,6 +1,10 @@
 package cmd
 
 import (
+	"fmt"
+	"strings"
+	"time"
+
 	"github.com/skiba-mateusz/bookshelf/store"
 	"github.com/spf13/cobra"
 )
@@ -23,14 +27,35 @@ func AddBookCommand(bookStore *store.BookStore) *cobra.Command {
 			if err != nil {
 				return err
 			}
+			readStr, err := getStringFlag(cmd, "read")
+			if err != nil {
+				return err
+			}
+
+			var read bool
+			if strings.ToLower(readStr) == "yes" {
+				read = true
+			} else if strings.ToLower(readStr) == "no" {
+				read = false
+			} else if readStr != "" {
+				return fmt.Errorf("invalid value for --read flag: it must be 'yes' or 'no'")
+			}
 
 			if title == "" || author == "" || year <= 0 {
-				cmd.PrintErrln("Error: all flags --title, --author, --year are required")
+				cmd.PrintErrln("Error: flags --title, --author, --year are required")
 				cmd.Usage()
 				return nil
 			}
 
-			err = bookStore.Add(title, author, year)
+			book := store.Book{
+				Title: title,
+				Author: author,
+				Year: year,
+				Read: read,
+				CreatedAt: time.Now(),
+			}
+
+			err = bookStore.Add(book)
 			if err != nil {
 				return err
 			}
@@ -42,6 +67,7 @@ func AddBookCommand(bookStore *store.BookStore) *cobra.Command {
 
 	command.Flags().StringP("title", "t", "", "Adds book title")
 	command.Flags().StringP("author", "a", "", "Adds book author")
+	command.Flags().StringP("read", "r", "no", "Adds book read status ('yes' or 'no')")
 	command.Flags().IntP("year", "y", 0, "Adds book publication year")
 
 	return command
