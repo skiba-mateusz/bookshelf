@@ -43,7 +43,7 @@ func SearchBooks(bookStore *store.BookStore) *cobra.Command {
 			}
 
 			if title == "" && author == "" && year == 0 && read == nil {
-				cmd.PrintErrln("Error: at least one flaeg --title, --author or --year must be specified")
+				cmd.PrintErrln("Error: at least one flag --title, --author or --year must be specified")
 				cmd.Usage()
 				return nil
 			}
