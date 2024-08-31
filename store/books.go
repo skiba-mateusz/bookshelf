@@ -2,6 +2,7 @@ package store
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"strings"
 	"time"
@@ -74,6 +75,26 @@ func (s *BookStore) Search(query SearchQuery) []Book {
 func (s *BookStore) Add(book Book) error {
 	book.ID = s.nextID()
 	s.books = append(s.books, book)
+	return s.save()
+}
+
+func (s *BookStore) Delete(bookID int64) error {
+	updatedBooks := []Book{}
+	found := false
+
+	for _, book := range s.books {
+		if bookID == book.ID {
+			found = true
+			continue
+		}
+		updatedBooks = append(updatedBooks, book)
+	}
+
+	if !found {
+		return fmt.Errorf("book with ID %d not found", bookID)
+	}
+
+	s.books = updatedBooks
 	return s.save()
 }
 
