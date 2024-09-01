@@ -55,7 +55,7 @@ func (s *BookStore) Books() []Book {
 // Searches for book by SearchQuery and returns them in alphabetical order by title
 func (s *BookStore) Search(query SearchQuery) []Book {
 	results := []Book{}
-	
+
 	for _, book := range s.books {
 		if query.Title != "" && !strings.Contains(strings.ToLower(book.Title), query.Title) {
 			continue
@@ -66,7 +66,7 @@ func (s *BookStore) Search(query SearchQuery) []Book {
 		if query.Year > 0  && book.Year != query.Year {
 			continue
 		}
-		if query.Read != nil && book.Read != query.Read {
+		if query.Read != nil && *book.Read != *query.Read {
 			continue
 		}
 		results = append(results, book)
