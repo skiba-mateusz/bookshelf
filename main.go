@@ -29,6 +29,7 @@ func main() {
 	rootCmd.AddCommand(cmd.SearchBooks(bookStore))
 	rootCmd.AddCommand(cmd.DeleteBookCommand(bookStore))
 	rootCmd.AddCommand(cmd.UpdateBookCommand(bookStore))
+	rootCmd.AddCommand(cmd.MarkReadCommand(bookStore))
 
 	if err := rootCmd.Execute(); err != nil {
 		log.Fatalf("Error executing command: %v", err)

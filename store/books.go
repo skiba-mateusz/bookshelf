@@ -103,6 +103,7 @@ func (s *BookStore) Update(book Book) error {
 			if book.Read != nil && book.Read != s.books[i].Read {
 				s.books[i].Read = book.Read
 			}
+			break
 		}
 	}
 
@@ -126,6 +127,21 @@ func (s *BookStore) Delete(bookID int64) error {
 	}
 
 	s.books = updatedBooks
+	return s.save()
+}
+
+// Marks book as read/unread
+func (s *BookStore) Mark(bookID int64, read *bool) error {
+
+	for i := range s.books {
+		if s.books[i].ID == bookID {
+			if read != nil {
+				s.books[i].Read = read
+			}
+			break
+		}
+	}
+
 	return s.save()
 }
 
