@@ -56,7 +56,7 @@ func getStringFlag(cmd *cobra.Command, name string) (string, error) {
 		cmd.PrintErrln("Error retrieving", name, "flag:", err)
 		return "", err
 	}
-	return value, nil
+	return strings.TrimSpace(value), nil
 } 
 
 // Retrievs flag as int

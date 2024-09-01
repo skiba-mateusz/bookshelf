@@ -49,8 +49,8 @@ func SearchBooks(bookStore *store.BookStore) *cobra.Command {
 			}
 
 			query := store.SearchQuery{
-				Title: strings.ToLower(strings.TrimSpace(title)),
-				Author: strings.ToLower(strings.TrimSpace(author)),
+				Title: strings.ToLower(title),
+				Author: strings.ToLower(author),
 				Year: year,
 				Read: read,
 			}
