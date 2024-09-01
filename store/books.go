@@ -14,7 +14,7 @@ type Book struct {
 	Title			string `json:"title"`
 	Author 		string `json:"author"`
 	Year    	int `json:"year"`
-	Read    	bool `json:"read"`
+	Read    	*bool `json:"read"`
 	CreatedAt time.Time `json:"created_at"`
 }
 
@@ -66,7 +66,7 @@ func (s *BookStore) Search(query SearchQuery) []Book {
 		if query.Year > 0  && book.Year != query.Year {
 			continue
 		}
-		if query.Read != nil && book.Read != *query.Read {
+		if query.Read != nil && book.Read != query.Read {
 			continue
 		}
 		results = append(results, book)

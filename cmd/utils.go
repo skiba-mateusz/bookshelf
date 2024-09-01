@@ -1,6 +1,7 @@
 package cmd
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/skiba-mateusz/bookshelf/store"
@@ -19,11 +20,33 @@ func printBooks(cmd *cobra.Command, books []store.Book) {
 	cmd.Println(strings.Repeat("-", 78))
 	for _, book := range books {
 		isRead := "[✘]"
-		if book.Read {
+		if *book.Read {
 			isRead = "[✔]"
 		}
 		cmd.Printf("%-4d %-30s %-30s %-6d %-6s\n", book.ID, book.Title, book.Author, book.Year, isRead)
 	}
+}
+
+// Parses read satus flag
+func parseReadFlag(cmd *cobra.Command) (*bool, error) {
+	readStr, err := cmd.Flags().GetString("read")
+	if err != nil {
+		cmd.PrintErrln("Error retrieving read flag:", err)
+		return nil, err
+	}
+
+	var read *bool
+	if readStr == "yes" {
+		value := true
+		read = &value
+	} else if readStr == "no" {
+		value := false
+		read = &value
+	}  else if readStr != "" {
+		return nil, fmt.Errorf("invalid value for --read flag: must be 'yes' or 'no'")
+	}
+	
+	return read, nil
 }
 
 // Retrievs flag as string

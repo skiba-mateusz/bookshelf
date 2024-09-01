@@ -1,8 +1,6 @@
 package cmd
 
 import (
-	"fmt"
-	"strings"
 	"time"
 
 	"github.com/skiba-mateusz/bookshelf/store"
@@ -27,18 +25,9 @@ func AddBookCommand(bookStore *store.BookStore) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			readStr, err := getStringFlag(cmd, "read")
+			read, err := parseReadFlag(cmd)
 			if err != nil {
 				return err
-			}
-
-			var read bool
-			if strings.ToLower(readStr) == "yes" {
-				read = true
-			} else if strings.ToLower(readStr) == "no" {
-				read = false
-			} else if readStr != "" {
-				return fmt.Errorf("invalid value for --read flag: it must be 'yes' or 'no'")
 			}
 
 			if title == "" || author == "" || year <= 0 {
