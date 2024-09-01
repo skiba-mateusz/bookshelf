@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"fmt"
 	"strings"
 
 	"github.com/skiba-mateusz/bookshelf/store"
@@ -22,24 +21,13 @@ func SearchBooks(bookStore *store.BookStore) *cobra.Command {
 			if err != nil {
 				return err
 			}
-			readStr, err := getStringFlag(cmd, "read") 
+			read, err := parseReadFlag(cmd) 
 			if err != nil {
 				return err
 			}
 			year, err := getIntFlag(cmd, "year")
 			if err != nil {
 				return err
-			}
-
-			var read *bool
-			if strings.ToLower(readStr) == "yes" {
-				trueVal := true
-				read = &trueVal
-			} else if strings.ToLower(readStr) == "no" {
-				falseVal := false
-				read = &falseVal
-			} else if readStr != "" {
-				return fmt.Errorf("invalid value for --read flag: must be 'yes' or 'no'")
 			}
 
 			if title == "" && author == "" && year == 0 && read == nil {
