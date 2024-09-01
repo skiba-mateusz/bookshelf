@@ -87,6 +87,28 @@ func (s *BookStore) Add(book Book) error {
 	return s.save()
 }
 
+// Updates book and saves it in the file
+func (s *BookStore) Update(book Book) error {
+	for i := range s.books {
+		if s.books[i].ID == book.ID {
+			if book.Title != "" {
+				s.books[i].Title = book.Title
+			}
+			if book.Author != "" {
+				s.books[i].Author = book.Author
+			}
+			if book.Year > 0 {
+				s.books[i].Year = book.Year
+			}
+			if book.Read != nil && book.Read != s.books[i].Read {
+				s.books[i].Read = book.Read
+			}
+		}
+	}
+
+	return s.save()
+}
+
 func (s *BookStore) Delete(bookID int64) error {
 	updatedBooks := []Book{}
 	found := false
